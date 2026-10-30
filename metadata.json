@@ -1,0 +1,6 @@
+{
+  "name": "PulseFit - Real-Time Fitness Tracker & Analytics",
+  "description": "Privacy-first fitness tracking application featuring real-time wearable heart rate telemetry, personalized workout plans, transparent analytics, and compliant data governance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

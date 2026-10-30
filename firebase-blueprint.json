@@ -1,0 +1,126 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User fitness profile, biometric baselines, and account preferences.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The unique Firebase Auth UID of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address from Firebase Auth."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User display name."
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "User profile avatar URL."
+        },
+        "age": {
+          "type": "number",
+          "description": "User age in years used for Tanaka formula."
+        },
+        "weightKg": {
+          "type": "number",
+          "description": "Body weight in kilograms."
+        },
+        "restingHr": {
+          "type": "number",
+          "description": "Resting heart rate in BPM."
+        },
+        "maxHrCustom": {
+          "type": "number",
+          "description": "Optional custom max heart rate."
+        },
+        "fitnessLevel": {
+          "type": "string",
+          "description": "Experience level (beginner, intermediate, advanced)."
+        },
+        "goal": {
+          "type": "string",
+          "description": "Primary fitness goal."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update."
+        }
+      },
+      "required": ["userId", "age", "weightKg", "restingHr"]
+    },
+    "Workout": {
+      "title": "Workout",
+      "description": "Recorded workout session with real-time heart rate telemetry summary.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique workout identifier."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the workout owner."
+        },
+        "title": {
+          "type": "string",
+          "description": "Name of the workout or routine."
+        },
+        "planId": {
+          "type": "string",
+          "description": "Optional ID of structured plan executed."
+        },
+        "startTime": {
+          "type": "number",
+          "description": "Unix timestamp in ms of workout start."
+        },
+        "endTime": {
+          "type": "number",
+          "description": "Unix timestamp in ms of workout end."
+        },
+        "durationSeconds": {
+          "type": "number",
+          "description": "Total active duration in seconds."
+        },
+        "avgHeartRate": {
+          "type": "number",
+          "description": "Average heart rate during workout."
+        },
+        "maxHeartRate": {
+          "type": "number",
+          "description": "Peak heart rate during workout."
+        },
+        "minHeartRate": {
+          "type": "number",
+          "description": "Minimum heart rate recorded."
+        },
+        "caloriesBurned": {
+          "type": "number",
+          "description": "Calculated caloric burn in kcal."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional user reflections or workout notes."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of completion."
+        }
+      },
+      "required": ["id", "userId", "title", "startTime", "durationSeconds", "avgHeartRate", "caloriesBurned"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Private user profile and physiological parameters."
+    },
+    "/users/{userId}/workouts/{workoutId}": {
+      "schema": "Workout",
+      "description": "Private subcollection containing workouts completed by the user."
+    }
+  }
+}

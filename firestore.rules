@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidUserProfile(data, userId) {
+      return data.userId == userId &&
+             request.auth.uid == userId &&
+             data.age is number && data.age >= 5 && data.age <= 120 &&
+             data.weightKg is number && data.weightKg >= 20 && data.weightKg <= 350 &&
+             data.restingHr is number && data.restingHr >= 30 && data.restingHr <= 150;
+    }
+
+    function isValidWorkout(data, userId) {
+      return data.userId == userId &&
+             request.auth.uid == userId &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
+             data.startTime is number &&
+             data.durationSeconds is number && data.durationSeconds >= 0 &&
+             data.avgHeartRate is number && data.avgHeartRate >= 30 && data.avgHeartRate <= 240 &&
+             data.caloriesBurned is number && data.caloriesBurned >= 0;
+    }
+
+    match /users/{userId} {
+      allow get, list, delete: if isOwner(userId);
+      allow create, update: if isValidId(userId) && isOwner(userId) && isValidUserProfile(request.resource.data, userId);
+
+      match /workouts/{workoutId} {
+        allow get, list, delete: if isOwner(userId);
+        allow create, update: if isValidId(workoutId) && isOwner(userId) && isValidWorkout(request.resource.data, userId);
+      }
+    }
+  }
+}
